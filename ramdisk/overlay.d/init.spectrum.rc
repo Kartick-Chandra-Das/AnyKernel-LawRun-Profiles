@@ -10,7 +10,7 @@
 
 # Balance L
 on property:persist.spectrum.profile=0
-   exec u:r:magisk:s0 root root -- /sbin/profile.Lbalance.sh
+   exec u:r:magisk:s0 root root -- /sbin/profile.balance.sh
 
 # Performance 
 on property:persist.spectrum.profile=1
@@ -23,3 +23,7 @@ on property:persist.spectrum.profile=2
 # Gaming
 on property:persist.spectrum.profile=3
    exec u:r:magisk:s0 root root -- /sbin/profile.gaming.sh
+
+# Morpho Balanced
+on property:persist.spectrum.profile=4
+   exec u:r:magisk:s0 root root -- /sbin/profile.balance-M.sh

@@ -1,3 +1,5 @@
+# negrroo
+# LawRun-Kernel Edit.
 # FRANKO KERNEL MANAGER
 # Ramdisk file for profile based kernel management
 # Implimentation inspired by Franco's fku profiles
@@ -14,3 +16,7 @@ on property:fku.perf.profile=1
 # Performance
 on property:fku.perf.profile=2
     setprop persist.spectrum.profile 1
+
+# Morpho Balanced
+on property:fku.perf.profile=3
+    setprop persist.spectrum.profile 4
