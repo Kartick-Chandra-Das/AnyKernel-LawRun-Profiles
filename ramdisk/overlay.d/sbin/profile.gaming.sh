@@ -15,7 +15,7 @@
             #        *******     ** **       **  **           #
             #        *******     **   **     **   **          #
             #=================================================#
-##############################LawRun-Gaminggg###################################
+##############################LawRun-Balanced###################################
 
 # Profile Log
 dt=`date '+%d/%m/%Y %H:%M:%S'`
@@ -124,7 +124,7 @@ echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
 echo "N" > /sys/module/workqueue/parameters/power_efficient
 
 # Thermals
-echo 10 > /sys/class/thermal/thermal_message/sconfig
+echo "10" > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 

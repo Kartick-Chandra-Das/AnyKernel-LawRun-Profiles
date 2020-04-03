@@ -87,7 +87,7 @@ echo "820000000" > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 # Limiter
 echo "0" > /sys/class/kgsl/kgsl-3d0/throttling
 echo "7" > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+echo "performance" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 
 ################################################################################
 
@@ -100,12 +100,12 @@ echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 ################################################################################
 
 # IO Scheduler
-echo "deadline" > /sys/block/sda/queue/scheduler
-echo "deadline" > /sys/block/sdb/queue/scheduler
-echo "deadline" > /sys/block/sdc/queue/scheduler
-echo "deadline" > /sys/block/sdd/queue/scheduler
-echo "deadline" > /sys/block/sde/queue/scheduler
-echo "deadline" > /sys/block/sdf/queue/scheduler
+echo "fiops" > /sys/block/sda/queue/scheduler
+echo "fiops" > /sys/block/sdb/queue/scheduler
+echo "fiops" > /sys/block/sdc/queue/scheduler
+echo "fiops" > /sys/block/sdd/queue/scheduler
+echo "fiops" > /sys/block/sde/queue/scheduler
+echo "fiops" > /sys/block/sdf/queue/scheduler
 
 ################################################################################
 
@@ -124,7 +124,7 @@ echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
 echo "N" > /sys/module/workqueue/parameters/power_efficient
 
 # Thermals
-echo 10 > /sys/class/thermal/thermal_message/sconfig
+echo "10" > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 

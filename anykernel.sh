@@ -19,9 +19,8 @@ block=
 
 ## AnyKernel permissions
 # set permissions for included ramdisk files
-## LawRun-Kernel by negrroo
-chmod -R 750 $ramdisk/*;
-chown -R root:root $ramdisk/*;
+set_perm_recursive 0 0 755 750 $ramdisk/*;
+
 
 # Find boot partition
 find_boot;
@@ -31,9 +30,13 @@ dump_boot;
 
 # begin ramdisk changes
 
-# init.rc
-backup_file init.rc;
-grep "import /init.LawRun.rc" init.rc >/dev/null || sed -i '1,/.*import.*/s/.*import.*/import \/init.LawRun.rc\n&/' init.rc
+# Magisk Check..
+if [ -d $ramdisk/.backup ]; then
+    ui_print "Running LawRun Ramdisk Tweaks";
+else
+    ui_print "BE READY TO RUN!";
+fi;
+
 # end ramdisk changes
 
 write_boot;

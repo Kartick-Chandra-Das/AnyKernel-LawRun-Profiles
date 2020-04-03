@@ -1,10 +1,21 @@
 #!/system/bin/sh
 
-## Start Profile
+################################################################################
+# helper functions to allow Android init like script
 
-#Stop perfd and remove its default values
-#stop perfd
-#rm /data/vendor/perfd/default_values
+function write() {
+    echo -n $2 > $1
+}
+
+function copy() {
+    cat $1 > $2
+}
+
+################################################################################
+
+{
+
+sleep 10;
 
 ################################################################################
             #=================================================#
@@ -15,11 +26,18 @@
             #        *******     ** **       **  **           #
             #        *******     **   **     **   **          #
             #=================================================#
-##############################LawRun-Balanced###################################
+#############################LawRun-Initation###################################
+
+
+#############################LawRun-Starting####################################
+
+## MOV on
+mkdir -p /storage/emulated/0/LawRun-Kernel/
+rm -r /storage/emulated/0/LawRun-Kernel/log.txt
 
 # Profile Log
 dt=`date '+%d/%m/%Y %H:%M:%S'`
-echo "$dt Balanced LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+echo "$dt LawRun profiles Started" >> /storage/emulated/0/LawRun-Kernel/log.txt
 
 ################################################################################
 
@@ -113,34 +131,32 @@ echo "300000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 echo "1766400" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 
 # GOLD Cluster
-echo "blu_schedutil" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+echo "schedutil" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 echo "825600" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-echo "2323200" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+echo "2803200" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 
 # BOost
-echo "1132800" > /sys/module/cpu_input_boost/parameters/input_boost_freq_lp
+echo "1056000" > /sys/module/cpu_input_boost/parameters/input_boost_freq_lp
 echo "902400" > /sys/module/cpu_input_boost/parameters/input_boost_freq_hp
 echo "100" > /sys/module/cpu_input_boost/parameters/input_boost_duration
-
-# Dynamic Schedtune Boost
 echo "1500" > /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration
 echo "25" > /sys/module/cpu_input_boost/parameters/dynamic_stune_boost
 
 # SILVER Cluster Limiter
-echo "20000" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us
-echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/down_rate_limit_us
+echo "1209000" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 echo "90" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_load
 echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/iowait_boost_enable
 echo "1" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/pl
-echo "500" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us
+echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us
 
 # GOLD Cluster Limiter
-echo "20000" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/down_rate_limit_us
-echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_freq
-echo "90" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_load
-echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/iowait_boost_enable
-echo "1" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/pl
-echo "500" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/up_rate_limit_us
+echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/down_rate_limit_us
+echo "1574000" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
+echo "90" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_load
+echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/iowait_boost_enable
+echo "1" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/pl
+echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/up_rate_limit_us
 
 ################################################################################
 
@@ -161,7 +177,7 @@ echo "710000000" > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 echo "710000000" > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 
 # Limiter
-echo "1" > /sys/class/kgsl/kgsl-3d0/throttling
+echo "0" > /sys/class/kgsl/kgsl-3d0/throttling
 echo "8" > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 
@@ -200,7 +216,7 @@ echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
 echo "Y" > /sys/module/workqueue/parameters/power_efficient
 
 # Thermals
-echo -1 > /sys/class/thermal/thermal_message/sconfig
+echo "-1" > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 
@@ -212,7 +228,7 @@ echo -1 > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 
-# Ram Management
+# LMK
 # 2048 x 4 /1024 = 8
 # lower number * higher multitasking
 echo "0" > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
@@ -224,8 +240,8 @@ echo "2048,3072,11520,16640,24320,42240" > /sys/module/lowmemorykiller/parameter
 swapoff /dev/block/zram0
 echo 1 > /sys/block/zram0/reset
 echo 0 > /sys/block/zram0/disksize
-echo 1610612736 > /sys/block/zram0/disksize
-echo 1536M > /sys/block/zram0/mem_limit
+echo 2147483648 > /sys/block/zram0/disksize
+echo 2048M > /sys/block/zram0/mem_limit
 echo 8 > /sys/block/zram0/max_comp_streams
 mkswap /dev/block/zram0
 swapon /dev/block/zram0 -p 32758
@@ -236,7 +252,4 @@ echo 3000 > /proc/sys/vm/dirty_writeback_centisecs
 
 ################################LawRun-END#######################################
 
-#start perfd back
-#start perfd
-
-## End Profile
+}&
