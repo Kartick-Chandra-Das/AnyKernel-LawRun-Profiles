@@ -34,7 +34,7 @@ dump_boot;
 if [ -d $ramdisk/.backup ]; then
     ui_print "Running LawRun Ramdisk Tweaks";
 else
-    ui_print "BE READY TO RUN!";
+    ui_print "ALWAYS BE READY TO RUN!!...";
 fi;
 
 # end ramdisk changes

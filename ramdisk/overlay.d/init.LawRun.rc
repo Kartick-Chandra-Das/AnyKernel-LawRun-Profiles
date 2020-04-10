@@ -1,23 +1,25 @@
-###############################LawRun-Start#####################################
+###############################LawRunKernel#####################################
 ##############################LawRun-Ramdisk####################################
 # LawRun-Kernel Edit.      #####################   **      ******   negrroo    #
 # Negrroo                  #                   #   **      *    *   **   **    #
 # SPECTRUM KERNEL MANAGER  #  LawRun Features  #   **      ******   **  **     #
 # Franco's fku profiles    #                   #   **      **       *****      #
 # Morpho KERNEL MANAGER    #####################   ******* ** **    **  **     #
-# Dont Copy :')            #LawRuninit.Settings#   ******* **   **  **   **    #
-##############################LawRun-Ramdisk####################################
+# Dont Copy :')          #ALWAYS BE READY TO RUN!# ******* **   **  **   **    #
+##############################LawRun-Starting###################################
 
 # Import profiles
 import /init.spectrum.rc
 import /init.performance_profiles.rc
 import /init.morpho.rc
 
-on init
-
+on early-init
     # Nothing
-on post-fs
 
+on init
+    # Nothing
+
+on post-fs
     # Nothing
 
 on property:sys.boot_completed=1

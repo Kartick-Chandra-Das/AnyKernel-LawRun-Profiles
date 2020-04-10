@@ -41,7 +41,9 @@ echo "blu_schedutil" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 echo "825600" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
 echo "1766400" > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 
-# BOost
+#BOost
+echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/hispeed_freq
+echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_freq
 echo "979200" > /sys/module/cpu_input_boost/parameters/input_boost_freq_lp
 echo "0" > /sys/module/cpu_input_boost/parameters/input_boost_freq_hp
 echo "32" > /sys/module/cpu_input_boost/parameters/input_boost_duration
@@ -49,22 +51,6 @@ echo "32" > /sys/module/cpu_input_boost/parameters/input_boost_duration
 # Dynamic Schedtune Boost
 echo "0" > /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration
 echo "0" > /sys/module/cpu_input_boost/parameters/dynamic_stune_boost
-
-# SILVER Cluster Limiter
-echo "10000" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/down_rate_limit_us
-echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/hispeed_freq
-echo "90" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/hispeed_load
-echo "0" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/iowait_boost_enable
-echo "1" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/pl
-echo "500" > /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/up_rate_limit_us
-
-# GOLD Cluster Limiter
-echo "10000" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/down_rate_limit_us
-echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_freq
-echo "90" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_load
-echo "0" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/iowait_boost_enable
-echo "1" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/pl
-echo "500" > /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/up_rate_limit_us
 
 ################################################################################
 
@@ -122,9 +108,6 @@ echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
 
 # Power
 echo "Y" > /sys/module/workqueue/parameters/power_efficient
-
-# Thermals
-echo "-1" > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 

@@ -12,7 +12,7 @@
 	on property:persist.morpho.profile=2
     setprop persist.spectrum.profile 0
 
-# Balanced (Default)
+# Balanced
 	on property:persist.morpho.profile=3
     setprop persist.spectrum.profile 4
 
