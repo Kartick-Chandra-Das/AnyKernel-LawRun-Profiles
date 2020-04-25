@@ -49,31 +49,76 @@ echo "$dt LawRun profiles Started" >> /storage/emulated/0/LawRun-Kernel/log.txt
 
 ###############################LawRun-Common####################################
 
-# Runtime FS tuning: as we have init boottime setting and kernel patch setting
+#according to Qcom this legacy value improves first launch latencies
+# stock value is 512k
+# from franciscofranco
+setprop dalvik.vm.heapminfree 2m
+
+# Set the default IRQ affinity to the silver cluster.
+echo "f" > /proc/irq/default_smp_affinity
+
+echo "1" > /dev/stune/foreground/schedtune.prefer_idle
+echo "1" > /dev/stune/top-app/schedtune.prefer_idle
+
+# Setup final cpuset
+echo "0-7" > /dev/cpuset/top-app/cpus
+echo "0-3,6-7" > /dev/cpuset/foreground/boost/cpus
+echo "0-3,6-7" > /dev/cpuset/foreground/cpus
+echo "0-1" > /dev/cpuset/background/cpus
+echo "0-3" > /dev/cpuset/system-background/cpus
+
+# Runtime fs tuning: as we have init boottime setting and kernel patch setting
 # default readahead to 2048KB. We should adjust the setting upon boot_complete
 # for runtime performance
 echo "128" > /sys/block/sda/queue/read_ahead_kb
 echo "128" > /sys/block/sda/queue/nr_requests
 echo "1" > /sys/block/sda/queue/iostats
+echo "deadline" > /sys/block/sda/queue/scheduler
+
 echo "128" > /sys/block/sdb/queue/read_ahead_kb
 echo "128" > /sys/block/sdb/queue/nr_requests
 echo "1" > /sys/block/sdb/queue/iostats
+echo "deadline" > /sys/block/sdb/queue/scheduler
+
 echo "128" > /sys/block/sdc/queue/read_ahead_kb
 echo "128" > /sys/block/sdc/queue/nr_requests
 echo "1" > /sys/block/sdc/queue/iostats
+echo "deadline" > /sys/block/sdc/queue/scheduler
+
 echo "128" > /sys/block/sdd/queue/read_ahead_kb
 echo "128" > /sys/block/sdd/queue/nr_requests
 echo "1" > /sys/block/sdd/queue/iostats
+echo "deadline" > /sys/block/sdd/queue/scheduler
+
 echo "128" > /sys/block/sde/queue/read_ahead_kb
 echo "128" > /sys/block/sde/queue/nr_requests
 echo "1" > /sys/block/sde/queue/iostats
+echo "deadline" > /sys/block/sde/queue/scheduler
+
 echo "128" > /sys/block/sdf/queue/read_ahead_kb
 echo "128" > /sys/block/sdf/queue/nr_requests
 echo "1" > /sys/block/sdf/queue/iostats
+echo "deadline" > /sys/block/sdf/queue/scheduler
+
 echo "128" > /sys/block/dm-0/queue/read_ahead_kb
-echo "128" > /sys/block/dm-1/queue/read_ahead_kb
-echo "128" > /sys/block/dm-2/queue/read_ahead_kb
-echo "128" > /sys/block/dm-3/queue/read_ahead_kb
+echo "128" > /sys/block/dm-0/queue/nr_requests
+echo "1" > /sys/block/dm-0/queue/iostats
+echo "deadline" > /sys/block/dm-0/queue/scheduler
+
+echo "0" > /dev/stune/blkio.group_idle
+echo "1" > /dev/stune/foreground/blkio.group_idle
+echo "0" > /dev/stune/background/blkio.group_idle
+echo "2" > /dev/stune/top-app/blkio.group_idle
+echo "2" > /dev/stune/rt/blkio.group_idle
+
+echo "1000" > /dev/stune/blkio.weight
+echo "1000" > /dev/stune/foreground/blkio.weight
+echo "10" > /dev/stune/background/blkio.weight
+echo "1000" > /dev/stune/top-app/blkio.weight
+echo "1000" > /dev/stune/rt/blkio.weight
+
+# DT2W
+echo "1" > /proc/touchpanel/gesture_enable
 
 # Disable a few minor and overall pretty useless modules for slightly better battery life & system wide performance;
 echo "Y" > /sys/module/bluetooth/parameters/disable_ertm
@@ -156,13 +201,6 @@ echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 
 ################################################################################
 
-# IO Scheduler
-echo "deadline" > /sys/block/sda/queue/scheduler
-echo "deadline" > /sys/block/sdb/queue/scheduler
-echo "deadline" > /sys/block/sdc/queue/scheduler
-echo "deadline" > /sys/block/sdd/queue/scheduler
-echo "deadline" > /sys/block/sde/queue/scheduler
-echo "deadline" > /sys/block/sdf/queue/scheduler
 
 ################################################################################
 
@@ -176,6 +214,12 @@ echo "deadline" > /sys/block/sdf/queue/scheduler
 
 # Charging mode
 echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
+
+# Power
+echo "N" > /sys/module/workqueue/parameters/power_efficient
+
+# Thermal
+echo "-1" > /sys/class/thermal/thermal_message/sconfig
 
 ################################################################################
 

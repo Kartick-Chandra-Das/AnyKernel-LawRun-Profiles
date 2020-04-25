@@ -109,6 +109,9 @@ echo "2800000" > /sys/class/power_supply/battery/constant_charge_current_max
 # Power
 echo "Y" > /sys/module/workqueue/parameters/power_efficient
 
+# Thermal
+echo "-1" > /sys/class/thermal/thermal_message/sconfig
+
 ################################################################################
 
                           #####################
