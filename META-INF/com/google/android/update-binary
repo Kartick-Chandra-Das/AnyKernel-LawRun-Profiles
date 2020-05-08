@@ -36,35 +36,7 @@ ui_print "negrroo";
 ui_print "LawRun-Kernel Edit.";
 ui_print " ";
 ui_print " ";
-ui_print "Ramdisk Cleaner";
 show_progress 1.34 0;
-# LawRun-Edit. overlay & overlay.d
-rm -rf $ramdisk/overlay;
-rm -rf $ramdisk/overlay.d;
-# LawRun-Edit. files
-rm -rf $ramdisk/init.darkness.rc;
-rm -rf $ramdisk/init.spectrum.rc;
-rm -rf $ramdisk/init.spectrum.sh;
-rm -rf $ramdisk/init.guyver.rc;
-rm -rf $ramdisk/init.radon.rc;
-rm -rf $ramdisk/init.agni.rc;
-rm -rf $ramdisk/init.infected.rc;
-rm -rf $ramdisk/init.dominator.rc;
-rm -rf $ramdisk/init.franco.rc;
-rm -rf $ramdisk/init.elementalx.rc;
-rm -rf $ramdisk/init.xceed.rc;
-rm -rf $ramdisk/init.morpho.rc;
-rm -rf $ramdisk/init.performance_profiles.rc;
-rm -rf $ramdisk/init.LawRun.rc;
-rm -rf $ramdisk/profile.balance.sh;
-rm -rf $ramdisk/profile.battery.sh;
-rm -rf $ramdisk/profile.gaming.sh;
-rm -rf $ramdisk/profile.performance.sh;
-rm -rf $ramdisk/profile.Hbalance.sh;
-rm -rf $ramdisk/profile.Lbalance.sh;
-rm -rf $ramdisk/init.profiles.sh;
-rm -rf $ramdisk/init.LawRun.sh;
-rm -rf $ramdisk;
 set_progress 0.8;
 
 file_getprop() { grep "^$2" "$1" | cut -d= -f2; }
