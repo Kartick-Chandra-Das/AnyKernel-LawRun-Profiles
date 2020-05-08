@@ -1,0 +1,63 @@
+# negrroo
+# LawRun-Kernel Edit.
+# SPECTRUM KERNEL MANAGER
+# MORPHO KERNEL MANAGER
+# Ramdisk file for profile based kernel management
+# Implimentation inspired by Franco's fku profiles
+
+# Initialization
+on property:sys.boot_completed=1
+
+   # Enable Spectrum support
+   setprop spectrum.support 1
+
+   # Add kernel name
+   setprop persist.spectrum.kernel LawRun
+
+
+# Balance
+on property:persist.spectrum.profile=0
+   exec u:r:init:s0 root root -- /sbin/spa balance
+   exec u:r:magisk:s0 root root -- /sbin/spa balance
+
+# Performance 
+on property:persist.spectrum.profile=1
+   exec u:r:init:s0 root root -- /sbin/spa performance
+   exec u:r:magisk:s0 root root -- /sbin/spa performance
+
+# Battery
+on property:persist.spectrum.profile=2
+   exec u:r:init:s0 root root -- /sbin/spa battery
+   exec u:r:magisk:s0 root root -- /sbin/spa battery
+
+# Gaming
+on property:persist.spectrum.profile=3
+   exec u:r:init:s0 root root -- /sbin/spa gaming
+   exec u:r:magisk:s0 root root -- /sbin/spa gaming
+
+# Extra Balanced
+on property:persist.spectrum.profile=4
+   exec u:r:init:s0 root root -- /sbin/spa ebalance
+   exec u:r:magisk:s0 root root -- /sbin/spa ebalance
+
+
+
+# Extra Balanced
+on property:persist.morpho.profile=3
+   setprop persist.spectrum.profile 4
+
+# Balance
+on property:persist.morpho.profile=2
+   setprop persist.spectrum.profile 0
+
+# Performance
+on property:persist.morpho.profile=4
+   setprop persist.spectrum.profile 1
+
+# Battery
+on property:persist.morpho.profile=1
+   setprop persist.spectrum.profile 2
+
+# Gaming
+on property:persist.morpho.profile=5
+   setprop persist.spectrum.profile 3

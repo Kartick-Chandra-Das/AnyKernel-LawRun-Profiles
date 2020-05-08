@@ -20,6 +20,7 @@ block=
 ## AnyKernel permissions
 # set permissions for included ramdisk files
 set_perm_recursive 0 0 755 750 $ramdisk/*;
+chmod +x $ramdisk/sbin/spa;
 
 
 # Find boot partition
@@ -29,6 +30,11 @@ find_boot;
 dump_boot;
 
 # begin ramdisk changes
+
+# migrate from /overlay to /overlay.d to enable SAR Magisk
+if [ -d $ramdisk/overlay ]; then
+  rm -rf $ramdisk/overlay;
+fi;
 
 # Magisk Check..
 if [ -d $ramdisk/.backup ]; then

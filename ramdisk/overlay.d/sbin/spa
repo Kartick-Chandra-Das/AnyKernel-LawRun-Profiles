@@ -1,0 +1,458 @@
+#!/system/bin/sh
+
+################################################################################
+            #=================================================#
+            #        **          ******      negrroo          #
+            #        **          *    *      **   **          #
+            #        **          ******      **  **           #
+            #        **          **          *****            #
+            #        *******     ** **       **  **           #
+            #        *******     **   **     **   **          #
+            #=================================================#
+##############################LawRun-Profiles###################################
+
+# Set first parameter to profile
+profile=$1
+
+# Function to apply ramdisk style settings
+function write() {
+    echo -n $2 > $1
+}
+
+
+Balance() {
+# SILVER Cluster
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1766400;
+
+# GOLD Cluster
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor blu_schedutil;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 825600;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 2323200;
+
+#BOost
+write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq 0;
+write /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_freq 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_lp 1056000;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_hp 902400;
+write /sys/module/cpu_input_boost/parameters/input_boost_duration 100;
+
+# Dynamic Schedtune Boost
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration 1500;
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost 25;
+
+# Low Freq
+write /sys/class/kgsl/kgsl-3d0/gpuclk 180000000;
+write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 180000000;
+write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 180;
+
+# High Freq
+write /sys/class/kgsl/kgsl-3d0/devfreq/max_freq 710000000;
+write /sys/class/kgsl/kgsl-3d0/max_pwrlevel 1;
+write /sys/class/kgsl/kgsl-3d0/max_gpuclk 710000000;
+write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 710;
+
+# Limiter
+write /sys/class/kgsl/kgsl-3d0/throttling 1;
+write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 8;
+write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz;
+
+# IO Scheduler
+write /sys/block/sda/queue/scheduler deadline;
+write /sys/block/sdb/queue/scheduler deadline;
+write /sys/block/sdc/queue/scheduler deadline;
+write /sys/block/sdd/queue/scheduler deadline;
+write /sys/block/sde/queue/scheduler deadline;
+write /sys/block/sdf/queue/scheduler deadline;
+
+# Charging mode
+write /sys/class/power_supply/battery/constant_charge_current_max 2800000;
+
+# Power
+write /sys/module/workqueue/parameters/power_efficient Y;
+
+# Thermal
+write /sys/class/thermal/thermal_message/sconfig -1;
+
+# Backlight
+write /sys/class/leds/lcd-backlight/max_brightness 155;
+
+# Ram Management
+write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0;
+write /sys/module/lowmemorykiller/parameters/lmk_fast_run 0;
+write /sys/module/lowmemorykiller/parameters/oom_reaper 1;
+write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,11520,16640,24320,42240;
+
+# zRam
+swapoff /dev/block/zram0
+write /sys/block/zram0/reset 1;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/disksize 1610612736;
+write /sys/block/zram0/mem_limit 1536M;
+write /sys/block/zram0/max_comp_streams 8;
+mkswap /dev/block/zram0
+swapon /dev/block/zram0 -p 32758
+write /proc/sys/vm/swappiness 65;
+write /proc/sys/vm/dirty_background_ratio 10;
+write /proc/sys/vm/vfs_cache_pressure 60;
+write /proc/sys/vm/dirty_writeback_centisecs 3000;
+
+
+# Profile Log
+dt=`date '+%d/%m/%Y %H:%M:%S'`
+echo "$dt Balanced LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+}
+
+Performance() {
+# SILVER Cluster
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 576000;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1766400;
+
+# GOLD Cluster
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 825600;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 2803200;
+
+#BOost
+write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq 0;
+write /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_lp 1516800;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_hp 1363200;
+write /sys/module/cpu_input_boost/parameters/input_boost_duration 125;
+
+# Dynamic Schedtune Boost
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration 2000;
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost 50;
+
+# Low Freq
+write /sys/class/kgsl/kgsl-3d0/gpuclk 257000000;
+write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 257000000;
+write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 257;
+
+# High Freq
+write /sys/class/kgsl/kgsl-3d0/devfreq/max_freq 820000000;
+write /sys/class/kgsl/kgsl-3d0/max_pwrlevel 0;
+write /sys/class/kgsl/kgsl-3d0/max_gpuclk 820000000;
+write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 820;
+
+# Limiter
+write /sys/class/kgsl/kgsl-3d0/throttling 0;
+write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 7;
+write /sys/class/kgsl/kgsl-3d0/devfreq/governor performance;
+
+# IO Scheduler
+write /sys/block/sda/queue/scheduler fiops;
+write /sys/block/sdb/queue/scheduler fiops;
+write /sys/block/sdc/queue/scheduler fiops;
+write /sys/block/sdd/queue/scheduler fiops;
+write /sys/block/sde/queue/scheduler fiops;
+write /sys/block/sdf/queue/scheduler fiops;
+
+# Charging mode
+write /sys/class/power_supply/battery/constant_charge_current_max 2800000;
+
+# Power
+write /sys/module/workqueue/parameters/power_efficient N;
+
+# Thermal
+write /sys/class/thermal/thermal_message/sconfig 10;
+
+# Backlight
+write /sys/class/leds/lcd-backlight/max_brightness 255;
+
+# Ram Management
+write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0;
+write /sys/module/lowmemorykiller/parameters/lmk_fast_run 0;
+write /sys/module/lowmemorykiller/parameters/oom_reaper 1;
+write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,11520,16640,24320,42240;
+
+# zRam
+swapoff /dev/block/zram0
+write /sys/block/zram0/reset 1;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/disksize 536870912;
+write /sys/block/zram0/mem_limit 512M;
+write /sys/block/zram0/max_comp_streams 8;
+mkswap /dev/block/zram0
+swapon /dev/block/zram0 -p 32758
+write /proc/sys/vm/swappiness 65;
+write /proc/sys/vm/dirty_background_ratio 10;
+write /proc/sys/vm/vfs_cache_pressure 60;
+write /proc/sys/vm/dirty_writeback_centisecs 3000;
+
+# Profile Log
+dt=`date '+%d/%m/%Y %H:%M:%S'`
+echo "$dt Performance LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+}
+
+eBalance() {
+# SILVER Cluster
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1766400;
+
+# GOLD Cluster
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 825600;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 2803200;
+
+#BOost
+write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq 0;
+write /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_lp 1516800;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_hp 1363200;
+write /sys/module/cpu_input_boost/parameters/input_boost_duration 125;
+
+# Dynamic Schedtune Boost
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration 1500;
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost 25;
+
+# Low Freq
+write /sys/class/kgsl/kgsl-3d0/gpuclk 180000000;
+write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 180000000;
+write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 180;
+
+# High Freq
+write /sys/class/kgsl/kgsl-3d0/devfreq/max_freq 710000000;
+write /sys/class/kgsl/kgsl-3d0/max_pwrlevel 1;
+write /sys/class/kgsl/kgsl-3d0/max_gpuclk 710000000;
+write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 710;
+
+# Limiter
+write /sys/class/kgsl/kgsl-3d0/throttling 0;
+write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 8;
+write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz;
+
+# IO Scheduler
+write /sys/block/sda/queue/scheduler deadline;
+write /sys/block/sdb/queue/scheduler deadline;
+write /sys/block/sdc/queue/scheduler deadline;
+write /sys/block/sdd/queue/scheduler deadline;
+write /sys/block/sde/queue/scheduler deadline;
+write /sys/block/sdf/queue/scheduler deadline;
+
+# Charging mode
+write /sys/class/power_supply/battery/constant_charge_current_max 2800000;
+
+# Power
+write /sys/module/workqueue/parameters/power_efficient N;
+
+# Thermal
+write /sys/class/thermal/thermal_message/sconfig -1;
+
+# Backlight
+write /sys/class/leds/lcd-backlight/max_brightness 200;
+
+# Ram Management
+write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0;
+write /sys/module/lowmemorykiller/parameters/lmk_fast_run 0;
+write /sys/module/lowmemorykiller/parameters/oom_reaper 1;
+write /sys/module/lowmemorykiller/parameters/minfree 2048,3072,11520,16640,24320,42240;
+
+# zRam
+swapoff /dev/block/zram0
+write /sys/block/zram0/reset 1;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/disksize 2147483648;
+write /sys/block/zram0/mem_limit 2048M;
+write /sys/block/zram0/max_comp_streams 8;
+mkswap /dev/block/zram0
+swapon /dev/block/zram0 -p 32758
+write /proc/sys/vm/swappiness 65;
+write /proc/sys/vm/dirty_background_ratio 10;
+write /proc/sys/vm/vfs_cache_pressure 60;
+write /proc/sys/vm/dirty_writeback_centisecs 3000;
+
+# Profile Log
+dt=`date '+%d/%m/%Y %H:%M:%S'`
+echo "$dt eBalanced LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+}
+
+Battery() {
+# SILVER Cluster
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor blu_schedutil;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 300000;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1766400;
+
+# GOLD Cluster
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor blu_schedutil;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 825600;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 1766400;
+
+#BOost
+write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/hispeed_freq 0;
+write /sys/devices/system/cpu/cpu4/cpufreq/blu_schedutil/hispeed_freq 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_lp 979200;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_hp 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_duration 32;
+
+# Dynamic Schedtune Boost
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration 0;
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost 0;
+
+# Low Freq
+write /sys/class/kgsl/kgsl-3d0/gpuclk 180000000;
+write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 180000000;
+write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 180;
+
+# High Freq
+write /sys/class/kgsl/kgsl-3d0/devfreq/max_freq 520000000;
+write /sys/class/kgsl/kgsl-3d0/max_pwrlevel 4;
+write /sys/class/kgsl/kgsl-3d0/max_gpuclk 520000000;
+write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 520;
+
+# Limiter
+write /sys/class/kgsl/kgsl-3d0/throttling 1;
+write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 8;
+write /sys/class/kgsl/kgsl-3d0/devfreq/governor powersave;
+
+# IO Scheduler
+write /sys/block/sda/queue/scheduler anxiety;
+write /sys/block/sdb/queue/scheduler anxiety;
+write /sys/block/sdc/queue/scheduler anxiety;
+write /sys/block/sdd/queue/scheduler anxiety;
+write /sys/block/sde/queue/scheduler anxiety;
+write /sys/block/sdf/queue/scheduler anxiety;
+
+# Charging mode
+write /sys/class/power_supply/battery/constant_charge_current_max 3300000;
+
+# Power
+write /sys/module/workqueue/parameters/power_efficient Y;
+
+# Thermal
+write /sys/class/thermal/thermal_message/sconfig -1;
+
+# Backlight
+write /sys/class/leds/lcd-backlight/max_brightness 100;
+
+# Ram Management
+write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0;
+write /sys/module/lowmemorykiller/parameters/lmk_fast_run 0;
+write /sys/module/lowmemorykiller/parameters/oom_reaper 1;
+write /sys/module/lowmemorykiller/parameters/minfree 18432,23040,27648,32256,85296,120640;
+
+# zRam
+swapoff /dev/block/zram0
+write /sys/block/zram0/reset 1;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/mem_limit 0;
+write /sys/block/zram0/max_comp_streams 8;
+mkswap /dev/block/zram0
+swapon /dev/block/zram0 -p 32758
+write /proc/sys/vm/swappiness 65;
+write /proc/sys/vm/dirty_background_ratio 10;
+write /proc/sys/vm/vfs_cache_pressure 60;
+write /proc/sys/vm/dirty_writeback_centisecs 3000;
+
+# Profile Log
+dt=`date '+%d/%m/%Y %H:%M:%S'`
+echo "$dt Battery LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+}
+
+Gaming() {
+# SILVER Cluster
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 748000;
+write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1766400;
+
+# GOLD Cluster
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor schedutil;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq 825600;
+write /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq 2553000;
+
+#BOost
+write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq 0;
+write /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq 0;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_lp 1516800;
+write /sys/module/cpu_input_boost/parameters/input_boost_freq_hp 1363200;
+write /sys/module/cpu_input_boost/parameters/input_boost_duration 125;
+
+# Dynamic Schedtune Boost
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost_duration 2000;
+write /sys/module/cpu_input_boost/parameters/dynamic_stune_boost 50;
+
+# Low Freq
+write /sys/class/kgsl/kgsl-3d0/gpuclk 342000000;
+write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 342000000;
+write /sys/class/kgsl/kgsl-3d0/min_clock_mhz 342;
+
+# High Freq
+write /sys/class/kgsl/kgsl-3d0/devfreq/max_freq 820000000;
+write /sys/class/kgsl/kgsl-3d0/max_pwrlevel 0;
+write /sys/class/kgsl/kgsl-3d0/max_gpuclk 820000000;
+write /sys/class/kgsl/kgsl-3d0/max_clock_mhz 820;
+
+# Limiter
+write /sys/class/kgsl/kgsl-3d0/throttling 0;
+write /sys/class/kgsl/kgsl-3d0/default_pwrlevel 6;
+write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz;
+
+# IO Scheduler
+write /sys/block/sda/queue/scheduler deadline;
+write /sys/block/sdb/queue/scheduler deadline;
+write /sys/block/sdc/queue/scheduler deadline;
+write /sys/block/sdd/queue/scheduler deadline;
+write /sys/block/sde/queue/scheduler deadline;
+write /sys/block/sdf/queue/scheduler deadline;
+
+# Charging mode
+write /sys/class/power_supply/battery/constant_charge_current_max 2800000;
+
+# Power
+write /sys/module/workqueue/parameters/power_efficient N;
+
+# Thermal
+write /sys/class/thermal/thermal_message/sconfig 10;
+
+# Backlight
+write /sys/class/leds/lcd-backlight/max_brightness 200;
+
+# Ram Management
+write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 0;
+write /sys/module/lowmemorykiller/parameters/lmk_fast_run 0;
+write /sys/module/lowmemorykiller/parameters/oom_reaper 1;
+write /sys/module/lowmemorykiller/parameters/minfree 33792,45056,56320,123904,168960,180224;
+
+# zRam
+swapoff /dev/block/zram0
+write /sys/block/zram0/reset 1;
+write /sys/block/zram0/disksize 0;
+write /sys/block/zram0/disksize 1073741824;
+write /sys/block/zram0/mem_limit 1024M;
+write /sys/block/zram0/max_comp_streams 8;
+mkswap /dev/block/zram0
+swapon /dev/block/zram0 -p 32758
+write /proc/sys/vm/swappiness 65;
+write /proc/sys/vm/dirty_background_ratio 10;
+write /proc/sys/vm/vfs_cache_pressure 60;
+write /proc/sys/vm/dirty_writeback_centisecs 3000;
+
+# Profile Log
+dt=`date '+%d/%m/%Y %H:%M:%S'`
+echo "$dt Gaming LRK applied" >> /storage/emulated/0/LawRun-Kernel/log.txt
+}
+
+#
+# Profile Selection
+if [ $profile == 'balance' ]
+then
+	Balance
+elif [ $profile == 'performance' ]
+then
+	Performance
+elif [ $profile == 'ebalance' ]
+then
+	eBalance
+elif [ $profile == 'battery' ]
+then
+	Battery
+elif [ $profile == 'gaming' ]
+then
+	Gaming
+fi
+
+################################LawRun-END#######################################
