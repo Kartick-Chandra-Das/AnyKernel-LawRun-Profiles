@@ -7,7 +7,9 @@
 # begin properties
 properties() {
 do.cleanup=1
-do.cleanuponabort=0
+do.cleanuponabort=1
+do.cpucheck=1
+cpu.name1=sdm845
 } # end properties
 
 # shell variables
